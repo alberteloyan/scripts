@@ -79,7 +79,7 @@ def uploadImagesUsingUrl(listOfLinks, OUTPUT_FILE_NAME):
 	 		sys.stdout.write("RUN NUMBER: " + str(index) + "...................")
 
 	 		#piping the file into a perl subprocess
-			pipe = subprocess.Popen(['perl', 'uploadFilesToTagged.pl', 'orphans/image' + str(index)], stdout=subprocess.PIPE)
+			pipe = subprocess.Popen(['perl', 'uploadFilesToWeb.pl', 'orphans/image' + str(index)], stdout=subprocess.PIPE)
 			singleFileOutput = pipe.stdout.read()
 		 	pipe.stdout.close()
 

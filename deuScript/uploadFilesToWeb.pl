@@ -3,14 +3,14 @@ use strict;
 
 ########################################################################
 # 
-# File   :  uploadFilesToTagged.pl
+# File   :  uploadFilesToWeb.pl
 # Author :  Albert Eloyan
 # E-mail :  alber.eloyan@gmail.com
 #
 ########################################################################
 #
-# This script mechanized upload of images to the tagged website
-# Provided login credentials and environment (dev,stage,prod)
+# This script mechanized upload of images to a static website
+# Provided login credentials and environment
 # Input: file to be uploaded
 # Output: string URL 
 # 
@@ -62,6 +62,7 @@ foreach (@ARGV) {
         print "PRE_URL.....................................OK \n";
     }   
 
+    #main::loginUrl are the globals defined above
     eval {$mech->get($main::loginUrl)};
     print "FAIL_GET\n" if $@;
 
@@ -69,6 +70,7 @@ foreach (@ARGV) {
         print "POST_URL....................................OK \n";
     }
 
+    #look at the page source and get the right element name
     $mech->form_name('login');
     $mech->field(username => $main::username);
     $mech->field(password => $main::password);
@@ -85,6 +87,7 @@ foreach (@ARGV) {
         print "AUTHENTICATED...............................OK \n";
     }
 
+    #again, just tune this to the wspecific website DOM
     $mech->form_name('uploadfile');
     $mech->field('upload_photo' => $_);
     
