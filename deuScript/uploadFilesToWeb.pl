@@ -28,24 +28,56 @@ use JSON qw( decode_json );
 my $DEBUG_MESSAGES = undef;
 my $EXECUTION_MODE = 'stage';
 
+#In order to be able to upload files, you need a valid account 
+#foe each of the environments.
+#Please add a login_credentials.txt file to this directory
+#The format should be json (e.g. '{prod: {username: 'something', ...}, stage: {...}})
+#The script will defaule to these values if no credentials provided
+
+my $input_file = "login_credentials.txt";
+open( my $input_fh, "<", $input_file ) || die "Can't open $input_file: $!";
+
+my $jsonCredentials = join('', <$input_fh>);
+my $decodedJsonCredentials = decode_json($jsonCredentials);
 
 if ($EXECUTION_MODE eq 'prod') {
-    our ($username)  = 'albertosmad@gmail.com';
-    our ($password)  = "random33";
+
+    if ($decodedJsonCredentials) {
+        our ($username) = $decodedJsonCredentials->{'prod'}{'username'};
+        our ($password) = $decodedJsonCredentials->{'prod'}{'password'};
+    } else {
+        our ($username)  = 'albertosmad@gmail.com';
+        our ($password)  = "random33";
+    }
+
     our ($photoUrl) = "http://phpadmin.tagged.com/photo_upload.html";
     our ($loginUrl) = "http://secure.tagged.com/secure_login.html";
     our ($galleryUrl) = "http://www.tagged.com/photo_gallery.html";
 }
 elsif ($EXECUTION_MODE eq 'stage') {
-    our ($username)  = 'aeloyan+hemingway@tagged.com';
-    our ($password)  = "random33";
+
+    if ($decodedJsonCredentials) {
+        our ($username) = $decodedJsonCredentials->{'stage'}{'username'};
+        our ($password) = $decodedJsonCredentials->{'stage'}{'password'};
+    } else {
+        our ($username)  = 'aeloyan+hemingway@tagged.com';
+        our ($password)  = "random33";
+    }
+
     our ($photoUrl) = "http://phpadmin.tag-stage.com/photo_upload.html";
     our ($loginUrl) = "http://secure.tag-stage.com/secure_login.html";
     our ($galleryUrl) = "http://www.tag-stage.com/photo_gallery.html";
 }
 else {
-    our ($username)  = 'aeloyan+kafka@tagged.com';
-    our ($password)  = "random33";
+
+    if ($decodedJsonCredentials) {
+        our ($username) = $decodedJsonCredentials->{'local'}{'username'};
+        our ($password) = $decodedJsonCredentials->{'local'}{'password'};
+    } else {
+        our ($username)  = 'aeloyan+kafka@tagged.com';
+        our ($password)  = "random33";
+    }
+
     our ($photoUrl) = "http://phpadmin.tag-local.com/photo_upload.html";
     our ($loginUrl) = "http://secure.tag-local.com/secure_login.html";
     our ($galleryUrl) = "http://www.tag-local.com/photo_gallery.html";
